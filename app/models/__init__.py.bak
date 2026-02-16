@@ -1,0 +1,76 @@
+# models/__init__.py
+# Central safe import for your models. Do not import create_app here.
+from extensions import db
+
+# import each model if present. If a file is missing it will be None.
+# This file only exposes classes that exist.
+_user = None
+_product = None
+_order = None
+_order_item = None
+_payment = None
+_customer = None
+_review = None
+_webhook_log = None
+_wishlist = None
+
+try:
+    from .user import User
+    _user = User
+except Exception:
+    User = None
+
+try:
+    from .product import Product
+    _product = Product
+except Exception:
+    Product = None
+
+try:
+    from .order import Order
+    _order = Order
+except Exception:
+    Order = None
+
+try:
+    from .order_item import OrderItem
+    _order_item = OrderItem
+except Exception:
+    OrderItem = None
+
+try:
+    from .payment import Payment
+    _payment = Payment
+except Exception:
+    Payment = None
+
+try:
+    from .customer import Customer
+    _customer = Customer
+except Exception:
+    Customer = None
+
+try:
+    from .reviews import Review
+    _review = Review
+except Exception:
+    Review = None
+
+try:
+    from .webhook_log import WebhookLog
+    _webhook_log = WebhookLog
+except Exception:
+    WebhookLog = None
+
+try:
+    from .wishlist import Wishlist
+    _wishlist = Wishlist
+except Exception:
+    Wishlist = None
+
+# A convenience export
+__all__ = [
+    "db",
+    "User", "Product", "Order", "OrderItem", "Payment",
+    "Customer", "Review", "WebhookLog", "Wishlist"
+]

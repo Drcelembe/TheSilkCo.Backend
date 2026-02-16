@@ -1,0 +1,56 @@
+# app/middleware/auth.py
+from functools import wraps
+from flask import g, jsonify
+from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+from models.user import User  # expects models/user.py to define User with integer id
+
+def _attach_current_user():
+    identity = get_jwt_identity()
+    if not identity:
+        g.current_user = None
+        return None
+    user = User.query.get(identity)
+    g.current_user = user
+    return user
+
+def jwt_required_with_user(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            verify_jwt_in_request()
+        except Exception:
+            return jsonify({"status": "error", "message": "Missing or invalid token"}), 401
+        user = _attach_current_user()
+        if user is None:
+            return jsonify({"status": "error", "message": "User not found"}), 404
+        return fn(*args, **kwargs)
+    return wrapper
+
+def roles_required(*roles):
+    def deco(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            try:
+                verify_jwt_in_request()
+            except Exception:
+                return jsonify({"status": "error", "message": "Missing or invalid token"}), 401
+            user = _attach_current_user()
+            if not user:
+                return jsonify({"status":"error","message":"User not found"}), 404
+            user_role = getattr(user, "role", None)
+            if user_role not in roles:
+                return jsonify({"status":"error","message":"Forbidden"}), 403
+            return fn(*args, **kwargs)
+        return wrapper
+    return deco
+
+def optional_jwt(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        try:
+            verify_jwt_in_request(optional=True)
+            _attach_current_user()
+        except Exception:
+            g.current_user = None
+        return fn(*args, **kwargs)
+    return wrapper

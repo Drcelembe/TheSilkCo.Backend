@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  web:
+    build: .
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: silkuser
+      POSTGRES_PASSWORD: silkpass
+      POSTGRES_DB: silkco
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

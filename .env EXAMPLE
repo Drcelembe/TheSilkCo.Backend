@@ -1,0 +1,13 @@
+FLASK_ENV=production
+SECRET_KEY=supersecretkey
+DATABASE_URL=postgresql://user:password@localhost/dbname
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=youremail@gmail.com
+MAIL_PASSWORD=yourpassword
+PAYFAST_MERCHANT_ID=your_merchant_id
+PAYFAST_MERCHANT_KEY=your_merchant_key
+PAYFAST_PASSPHRASE=your_passphrase
+PAYPAL_CLIENT_ID=your_client_id
+PAYPAL_CLIENT_SECRET=your_client_secret
